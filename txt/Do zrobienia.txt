@@ -1,0 +1,21 @@
+PROCEDURY:
+	- Ustawianie znizek (obnizanie 1 stycznia o jeden poziom),
+	- Przenoszenie starych rezerwacji (starszych niż rok),
+	- Klienta (UPDATE),
+	- Rezerwacja (DELETE),
+	- Przyjęcie rezerwacji przez pracownika (UPDATE na id_pracownika w rezerwacji i któraś z dat [jest opis])
+	- Potwierdzenie rezerwacji,
+	- Zakończenie rezerwacji (pobranie opłaty + data zakończenia),
+
+TRIGGER: 
+	- Przy rezerwacji zmieniać zniżke dla klienta,
+
+FUNKCJE:
+	- Dostępne pokoje,
+	- Rezerwacje dla klienta (TABELARYCZNA),
+	- Obliczanie zniżek,
+	- Goście do rezerwacji (TABELARYCZNA),
+	
+WIDOKI:
+	- Odwzorować tabele z oracle widokami (+ triggert insted of)
+	

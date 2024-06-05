@@ -1,0 +1,51 @@
+SQLServer i Oracle
+
+Tabele:
+Adresy
+Dane_personalne
+Personel
+Klienci
+Rezerwacje
+Goście
+Pokoje -- zmień pole wymaga naprawy na str. z opisem
+Wyposazenie
+Hotele
+
+Server centralny SQL (wszystkie dane) a Oracle do replikacji (migawkowa, raz na miesiąc / raz na dwa tygodnie)
+-- suggested: dane ogólne na oraclu, procedury na sql server, 
+
+Dodać do rezerwacji znizke (za stałego klienta - 2 rez: 5%, 5 rez: 10%, 10 rez: 20%)
+
+Archiwalne rezerwacje przenosic na inna partycje
+
+Widoki:
+- stałych klientów
+- personelu dla hotelu
+- ile rezerwacji na pracownika (ile przyjął)
+- pokoje i co wymaga naprawy
+- pokoje do posprzątania 
+- aktywni pracownicy dla danego hotelu
+- miesięczne, kwartalne i roczne zestawienie dla hotelu, ile rezerwacji, ile zarobili
+
+Procedury:
+- złożenie rezerwacji
+- zatrudnij / zwolnij pracownika
+- zakładanie profilu klienta 
+- potwierdzenie rezerwacji
+- obliczenie zniżki 
+- edytowanie rezerwacji 
+- zmiana equipment w pokoju (dodanie)
+- Zobaczyc wolne pokoje (od do) i ile osób w pokoju
+- zmiana ceny za pokój 
+- request sprzątnięcia 
+- request naprawy
+- update zniżek 01.01.XXXX
+- procedura przenoszenia danych do archiwum (insert w archiwum, usuń z aktualnego serwera) -- co dwa tygodnie
+- na koniec miesiąca dane do archiwum
+
+Funkcje: 
+- sprawdzenie czy zniżka powinna być naliczona
+
+Triggery:
+- insert do rezerwaji -- sprawdź zniżkę
+- sprzątnięcie pokoju na zamkniętej rezerwacji
