@@ -12,7 +12,6 @@ Wyposazenie
 Hotele
 
 Server centralny SQL (wszystkie dane) a Oracle do replikacji (migawkowa, raz na miesiąc / raz na dwa tygodnie)
--- suggested: dane ogólne na oraclu, procedury na sql server, 
 
 Dodać do rezerwacji znizke (za stałego klienta - 2 rez: 5%, 5 rez: 10%, 10 rez: 20%)
 

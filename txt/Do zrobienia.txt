@@ -1,20 +1,9 @@
 PROCEDURY:
-	- Przenoszenie starych rezerwacji (starszych niż rok),
-	- Klienta (UPDATE),
-
-FUNKCJE:
-	- Dostępne pokoje,
-	- Rezerwacje dla klienta (TABELARYCZNA),
-	- Goście do rezerwacji (TABELARYCZNA),
-	
-WIDOKI:
-	- Odwzorować tabele z oracle widokami (+ triggert insted of)
-
+	- Przenoszenie starych rezerwacji (starszych niż rok), (nie jestem pewna czy o to chodziło)
 
 dodatkowo:
-	- zrobic inserty w pliku DB_INSERT z uzyciem stworzonych procedur
+	- zrobic inserty w pliku DB_INSERT z uzyciem stworzonych procedur (done? I hope?)
 	- tak samo sprawdzic dzialanie dokladnie kazdej procedury
-	- dodac obsluge bledow w procedurach
 
 
 	

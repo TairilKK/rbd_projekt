@@ -1,4 +1,4 @@
--------------- BLOK CZYSZCZACY
+Ôªø-------------- BLOK CZYSZCZACY
 -----------------------------------
 BEGIN
   FOR cur_rec IN (SELECT object_name, object_type 
@@ -161,7 +161,7 @@ BEFORE INSERT ON ZNIZKI
 FOR EACH ROW
 BEGIN
   IF :NEW.PROCENT < 0 AND :NEW.PROCENT > 100 THEN
-    RAISE_APPLICATION_ERROR(-20001, 'PROCENT PWOINIEN BY∆ W ZAKRESIE [0, 100]');
+    RAISE_APPLICATION_ERROR(-20001, 'PROCENT PWOINIEN BY√Ü W ZAKRESIE [0, 100]');
   END IF;
   :NEW.ID_ZNIZKI := ZNIZKI_SEQ.NEXTVAL;
 END;
@@ -318,7 +318,7 @@ BEGIN
 END;
 /
 -------------- ----------------------- --------------
--------------- -- REZERWACJE US£UGI -- --------------
+-------------- -- REZERWACJE US¬£UGI -- --------------
 -------------- ----------------------- --------------
 CREATE TABLE REZERWACJE_USLUGI 
 (
@@ -387,6 +387,190 @@ FROM
 JOIN ADRESY USING(ID_ADRESU);
 /
 
+-------------- ------------ -------------- 
+-------------- -- ADRESY -- -------------- 
+-------------- ------------ --------------
+CREATE OR REPLACE VIEW ADRESY_VIEW AS
+SELECT 
+    ID_ADRESU,
+    ULICA,
+    NR_DOMU,
+    NR_MIESZKANIA,
+    MIEJSCOWOSC,
+    KOD_POCZTOWY,
+    KRAJ
+FROM ADRESY;
+/
+
+-------------- -------------- -------------- 
+-------------- -- PERSONEL -- -------------- 
+-------------- -------------- --------------
+CREATE OR REPLACE VIEW PERSONEL_VIEW AS
+SELECT 
+    P.ID_PRACOWNIKA,
+    P.ID_HOTELU,
+    P.DATA_ZATRUDNIENIA,
+    P.DATA_ZWOLNIENIA,
+    P.PENSJA,
+    P.STANOWISKO,
+    D.IMIE,
+    D.NAZWISKO,
+    D.EMAIL,
+    D.NR_TELEFONU,
+    A.ULICA,
+    A.NR_DOMU,
+    A.NR_MIESZKANIA,
+    A.MIEJSCOWOSC,
+    A.KOD_POCZTOWY,
+    A.KRAJ,
+    H.NAZWA AS HOTEL_NAZWA
+FROM PERSONEL P
+JOIN DANE_PERSONALNE D ON P.ID_OSOBY = D.ID_OSOBY
+JOIN ADRESY A ON D.ID_ADRESU = A.ID_ADRESU
+JOIN HOTELE H ON P.ID_HOTELU = H.ID_HOTELU;
+/
+
+-------------- ------------ -------------- 
+-------------- -- ZNI≈ªKI -- -------------- 
+-------------- ------------ --------------
+CREATE OR REPLACE VIEW ZNIZKI_VIEW AS
+SELECT 
+    ID_ZNIZKI,
+    PROCENT
+FROM ZNIZKI;
+/
+
+-------------- ------------- -------------- 
+-------------- -- KLIENCI -- -------------- 
+-------------- ------------- --------------
+CREATE OR REPLACE VIEW KLIENCI_VIEW AS
+SELECT 
+    K.ID_KLIENTA,
+    D.IMIE,
+    D.NAZWISKO,
+    D.EMAIL,
+    D.NR_TELEFONU,
+    A.ULICA,
+    A.NR_DOMU,
+    A.NR_MIESZKANIA,
+    A.MIEJSCOWOSC,
+    A.KOD_POCZTOWY,
+    A.KRAJ,
+    Z.PROCENT
+FROM KLIENCI K
+JOIN DANE_PERSONALNE D ON K.ID_OSOBY = D.ID_OSOBY
+JOIN ADRESY A ON D.ID_ADRESU = A.ID_ADRESU
+LEFT JOIN ZNIZKI Z ON K.ID_ZNIZKI = Z.ID_ZNIZKI;
+/
+
+-------------- ------------ -------------- 
+-------------- -- POKOJE -- -------------- 
+-------------- ------------ --------------
+CREATE OR REPLACE VIEW POKOJE_VIEW AS
+SELECT 
+    P.ID_POKOJU,
+    P.NR_POKOJU,
+    P.LICZBA_OSOB,
+    P.CENA,
+    P.POSPRZATANY,
+    P.WYMAGA_NAPRAWY,
+    H.NAZWA AS HOTEL_NAZWA,
+    A.ULICA,
+    A.NR_DOMU,
+    A.MIEJSCOWOSC,
+    A.KOD_POCZTOWY,
+    A.KRAJ
+FROM POKOJE P
+JOIN HOTELE H ON P.ID_HOTELU = H.ID_HOTELU
+JOIN ADRESY A ON H.ID_ADRESU = A.ID_ADRESU;
+/
+
+-------------- ---------------- -------------- 
+-------------- -- REZERWACJE -- -------------- 
+-------------- ---------------- --------------
+CREATE OR REPLACE VIEW REZERWACJE_VIEW AS
+SELECT 
+    R.ID_REZERWACJI,
+    R.PRZYJAZD,
+    R.ODJAZD,
+    R.ZAMELDOWANIE,
+    R.ODMELDOWANIE,
+    R.OPLATA_ZNISCZENIE,
+    R.CENA_POBYTU,
+    R.OPLATA_ZALICZKA,
+    R.OPLATA_CALOSC,
+    K.IMIE AS KLIENT_IMIE,
+    K.NAZWISKO AS KLIENT_NAZWISKO,
+    P.IMIE AS PRACOWNIK_IMIE,
+    P.NAZWISKO AS PRACOWNIK_NAZWISKO,
+    PO.NR_POKOJU,
+    H.NAZWA AS HOTEL_NAZWA
+FROM REZERWACJE R
+JOIN KLIENCI K ON R.ID_KLIENTA = K.ID_KLIENTA
+JOIN PERSONEL P ON R.ID_PRACOWNIKA = P.ID_PRACOWNIKA
+JOIN POKOJE PO ON R.ID_POKOJU = PO.ID_POKOJU
+JOIN HOTELE H ON R.ID_HOTELU = H.ID_HOTELU;
+/
+
+-------------- ------------ -------------- 
+-------------- -- GO≈öCIE -- -------------- 
+-------------- ------------ --------------
+CREATE OR REPLACE VIEW GOSCIE_VIEW AS
+SELECT 
+    G.ID_REZERWACJI,
+    G.IMIE,
+    G.NAZWISKO,
+    R.PRZYJAZD,
+    R.ODJAZD,
+    K.IMIE AS KLIENT_IMIE,
+    K.NAZWISK–û AS KLIENT_NAZWISKO
+FROM GOSCIE G
+JOIN REZERWACJE R ON G.ID_REZERWACJI = R.ID_REZERWACJI
+JOIN KLIENCI K ON R.ID_KLIENTA = K.ID_KLIENTA;
+/
+
+
+-------------- ------------ -------------- 
+-------------- -- US≈ÅUGI -- -------------- 
+-------------- ------------ --------------
+CREATE OR REPLACE VIEW USLUGI_VIEW AS
+SELECT 
+    U.ID_USLUGI,
+    U.NAZWA,
+    U.CENA,
+    H.NAZWA AS HOTEL_NAZWA,
+    A.ULICA,
+    A.NR_DOMU,
+    A.MIEJSCOWOSC,
+    A.KOD_POCZTOWY,
+    A.KRAJ
+FROM USLUGI U
+JOIN HOTELE H ON U.ID_HOTELU = H.ID_HOTELU
+JOIN ADRESY A ON H.ID_ADRESU = A.ID_ADRESU;
+/
+
+-------------- ----------------------- -------------- 
+-------------- -- REZERWACJE_US≈ÅUGI -- -------------- 
+-------------- ----------------------- --------------
+CREATE OR REPLACE VIEW REZERWACJE_USLUGI_VIEW AS
+SELECT 
+    RU.ID_REZ_USLUGI,
+    RU.LICZBA_OSOB,
+    R.PRZYJAZD,
+    R.ODJAZD,
+    U.NAZWA AS USLUGA_NAZWA,
+    H.NAZWA AS HOTEL_NAZWA,
+    K.IMIE AS KLIENT_IMIE,
+    K.NAZWISKO AS KLIENT_NAZWISKO
+FROM REZERWACJE_USLUGI RU
+JOIN REZERWACJE R ON RU.ID_REZERWACJI = R.ID_REZERWACJI
+JOIN USLUGI U ON RU.ID_USLUGI = U.ID_USLUGI
+JOIN HOTELE H ON RU.ID_HOTELU = H.ID_HOTELU
+JOIN KLIENCI K ON R.ID_KLIENTA = K.ID_KLIENTA;
+/
+
+
+
 -------------- FUNKCJE
 ----------------------------
 
@@ -452,6 +636,33 @@ BEGIN
   VALUES(ULICA, NR_DOMU, NR_MIESZKANIA, MIEJSCOWOSC, KOD_POCZTOWY, KRAJ);
 END DODAJ_ADRES;
 /
+
+-------------- ------------------- -------------- 
+-------------- -- ZMIEN ADRES -- -------------- 
+-------------- ------------------- -------------- 
+CREATE OR REPLACE PROCEDURE ZMIEN_ADRES
+(
+  p_ID_ADRESU IN NUMBER,
+  p_ULICA IN VARCHAR2,
+  p_NR_DOMU IN NUMBER,
+  p_NR_MIESZKANIA IN NUMBER,
+  p_MIEJSCOWOSC IN VARCHAR2,
+  p_KOD_POCZTOWY IN VARCHAR2,
+  p_KRAJ IN VARCHAR2
+) AS 
+BEGIN
+  UPDATE ADRESY
+  SET 
+      ULICA = p_ULICA,
+      NR_DOMU = p_NR_DOMU,
+      NR_MIESZKANIA = p_NR_MIESZKANIA,
+      MIEJSCOWOSC = p_MIEJSCOWOSC,
+      KOD_POCZTOWY = p_KOD_POCZTOWY,
+      KRAJ = p_KRAJ
+  WHERE ID_ADRESU = p_ID_ADRESU;
+END ZMIEN_ADRES;
+/
+
 -------------- --------------------------- -------------- 
 -------------- -- DODAJ DANE PERSONALNE -- -------------- 
 -------------- --------------------------- -------------- 
@@ -475,6 +686,29 @@ BEGIN
   WHERE ULICA=ULICA AND NR_DOMU=NR_DOMU AND NR_MIESZKANIA=NR_MIESZKANIA AND MIEJSCOWOSC=MIEJSCOWOSC AND KOD_POCZTOWY=KOD_POCZTOWY AND KRAJ=KRAJ));
 END DODAJ_DANE_PERSONALNE;
 /
+
+-------------- -------------------------- -------------- 
+-------------- -- ZMIEN DANE PERSONALNE -- -------------- 
+-------------- -------------------------- -------------- 
+CREATE OR REPLACE PROCEDURE ZMIEN_DANE_PERSONALNE
+(
+  p_ID_OSOBY IN NUMBER,
+  p_IMIE IN VARCHAR2,
+  p_NAZWISKO IN VARCHAR2,
+  p_EMAIL IN VARCHAR2,
+  p_NR_TELEFONU IN VARCHAR2
+) AS 
+BEGIN
+  UPDATE DANE_PERSONALNE
+  SET 
+      IMIE = p_IMIE,
+      NAZWISKO = p_NAZWISKO,
+      EMAIL = p_EMAIL,
+      NR_TELEFONU = p_NR_TELEFONU
+  WHERE ID_OSOBY = p_ID_OSOBY;
+END ZMIEN_DANE_PERSONALNE;
+/
+
 -------------- ------------------- -------------- 
 -------------- -- DODAJ KLIENTA -- -------------- 
 -------------- ------------------- -------------- 
@@ -497,6 +731,56 @@ BEGIN
   VALUES((SELECT ID_OSOBY FROM DANE_PERSONALNE WHERE IMIE=IMIE AND NAZWISKO=NAZWISKO AND EMAIL=EMAIL AND NR_TELEFONU=NR_TELEFONU));
 END DODAJ_KLIENTA;
 /
+
+-------------- -------------------------------- -------------- 
+-------------- -- ZMIE≈É DANE OSOBOWE KLIENTA -- -------------- 
+-------------- -------------------------------- -------------- 
+CREATE OR REPLACE PROCEDURE ZMIEN_DANE_OSOBOWE_KLIENTA
+(
+  p_ID_KLIENTA IN NUMBER,
+  p_IMIE IN VARCHAR2,
+  p_NAZWISKO IN VARCHAR2,
+  p_EMAIL IN VARCHAR2,
+  p_NR_TELEFONU IN VARCHAR2
+) AS 
+BEGIN
+  ZMIEN_DANE_OSOBOWE(
+    p_ID_OSOBY => (SELECT ID_OSOBY FROM KLIENCI WHERE ID_KLIENTA = p_ID_KLIENTA),
+    p_IMIE => p_IMIE,
+    p_NAZWISKO => p_NAZWISKO,
+    p_EMAIL => p_EMAIL,
+    p_NR_TELEFONU => p_NR_TELEFONU
+  );
+END ZMIEN_DANE_OSOBOWE_KLIENTA;
+/
+
+-------------- ------------------------- -------------- 
+-------------- -- ZMIE≈É ADRES KLIENTA -- -------------- 
+-------------- ------------------------- -------------- 
+CREATE OR REPLACE PROCEDURE ZMIEN_ADRES_KLIENTA
+(
+  p_ID_KLIENTA IN NUMBER,
+  p_ULICA IN VARCHAR2,
+  p_NR_DOMU IN NUMBER,
+  p_NR_MIESZKANIA IN NUMBER,
+  p_MIEJSCOWOSC IN VARCHAR2,
+  p_KOD_POCZTOWY IN VARCHAR2,
+  p_KRAJ IN VARCHAR2
+) AS 
+BEGIN
+  ZMIEN_ADRES(
+    p_ID_ADRESU => (SELECT ID_ADRESU FROM DANE_PERSONALNE WHERE ID_OSOBY = (SELECT ID_OSOBY FROM KLIENCI WHERE ID_KLIENTA = p_ID_KLIENTA)),
+    p_ULICA => p_ULICA,
+    p_NR_DOMU => p_NR_DOMU,
+    p_NR_MIESZKANIA => p_NR_MIESZKANIA,
+    p_MIEJSCOWOSC => p_MIEJSCOWOSC,
+    p_KOD_POCZTOWY => p_KOD_POCZTOWY,
+    p_KRAJ => p_KRAJ
+  );
+END ZMIEN_ADRES_KLIENTA;
+/
+
+
 -------------- ---------------------- -------------- 
 -------------- -- DODAJ PRACOWNIKA -- -------------- 
 -------------- ---------------------- -------------- 
@@ -872,7 +1156,7 @@ BEGIN
 END DODAJ_REZERWACJA_USULGA;
 /
 -------------- ----------------------- -------------- 
--------------- -- ZAKO—CZ REZERWACJE -- -------------- 
+-------------- -- ZAKO√ëCZ REZERWACJE -- -------------- 
 -------------- ----------------------- --------------
 CREATE OR REPLACE PROCEDURE ZAKONCZ_REZERWACJE 
 (
@@ -883,7 +1167,7 @@ BEGIN
 END ZAKONCZ_REZERWACJE;
 /
 -------------- -------------------------- -------------- 
--------------- -- POTWIERDè REZERWACJE -- -------------- 
+-------------- -- POTWIERD¬è REZERWACJE -- -------------- 
 -------------- -------------------------- --------------
 CREATE OR REPLACE PROCEDURE POTWIERDZ_REZERWACJE 
 (
@@ -918,7 +1202,7 @@ BEGIN
 END OPLATA_ZNISZCZENIE;
 /
 -------------- --------------------- -------------- 
--------------- -- USU— REZERWACJE -- -------------- 
+-------------- -- USU√ë REZERWACJE -- -------------- 
 -------------- --------------------- --------------
 CREATE OR REPLACE PROCEDURE USUN_REZERWACJE 
 (
@@ -929,7 +1213,7 @@ BEGIN
 END USUN_REZERWACJE;
 /
 -------------- ---------------------------- -------------- 
--------------- -- AKTUALIZUJ CEN  POBYTU -- -------------- 
+-------------- -- AKTUALIZUJ CEN√ä POBYTU -- -------------- 
 -------------- ---------------------------- --------------
 CREATE OR REPLACE PROCEDURE AKTUALIZUJ_CENE_POBYTU 
 (
@@ -942,7 +1226,7 @@ BEGIN
 END AKTUALIZUJ_CENE_POBYTU;
 /
 -------------- ------------------ -------------- 
--------------- -- DODAJ ZNIØKE -- -------------- 
+-------------- -- DODAJ ZNI¬ØKE -- -------------- 
 -------------- ------------------ --------------
 CREATE OR REPLACE PROCEDURE DODAJ_ZNIZKE 
 (
@@ -953,7 +1237,7 @@ BEGIN
 END DODAJ_ZNIZKE;
 /
 -------------- ------------------- -------------- 
--------------- -- EDYTUJ ZNIØKE -- -------------- 
+-------------- -- EDYTUJ ZNI¬ØKE -- -------------- 
 -------------- ------------------- --------------
 CREATE OR REPLACE PROCEDURE EDYTUJ_ZNIZKE 
 (
@@ -965,7 +1249,7 @@ BEGIN
 END EDYTUJ_ZNIZKE;
 /
 -------------- ----------------- -------------- 
--------------- -- USU— ZNIØKE -- -------------- 
+-------------- -- USU√ë ZNI¬ØKE -- -------------- 
 -------------- ----------------- --------------
 CREATE OR REPLACE PROCEDURE USUN_ZNIZKE 
 (
@@ -976,7 +1260,7 @@ BEGIN
 END USUN_ZNIZKE;
 /
 -------------- ------------------ -------------- 
--------------- -- OBNIØ ZNIØKI -- -------------- 
+-------------- -- OBNI¬Ø ZNI¬ØKI -- -------------- 
 -------------- ------------------ --------------
 CREATE OR REPLACE PROCEDURE OBNIZ_ZNIZKI AS 
 BEGIN  
@@ -994,7 +1278,7 @@ END OBNIZ_ZNIZKI;
 ------------------------------
 
 -------------- ----------------------- -------------- 
--------------- -- AKTUALIZUJ ZNIØKE -- -------------- 
+-------------- -- AKTUALIZUJ ZNI¬ØKE -- -------------- 
 -------------- ----------------------- --------------
 CREATE OR REPLACE TRIGGER AKTUALIZUJ_ZNIZKE 
 BEFORE INSERT ON REZERWACJE 
