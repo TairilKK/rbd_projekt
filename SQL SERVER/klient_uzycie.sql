@@ -1,0 +1,17 @@
+EXEC klient.DODAJ_GOSCIA 1, 'IMIE', 'NAZWISKO';
+SELECT * FROM HOTEL..RBDHOTEL.GOSCIE;
+GO
+EXEC KLIENT.DODAJ_KLIENTA
+    @IMIE = 'Nikodem',
+    @NAZWISKO = 'Rutkowski',
+    @EMAIL = 'nikodem.rutkowski@example.com',
+    @NR_TELEFONU = '123456789',
+    @ULICA = 'Kwiatów',
+    @NR_DOMU = 10,
+    @NR_MIESZKANIA = 5,
+    @MIEJSCOWOSC = 'Warszawa',
+    @KOD_POCZTOWY = '00-001',
+    @KRAJ = 'Polska';
+SELECT * FROM HOTEL..RBDHOTEL.KLIENCI;
+SELECT * FROM HOTEL..RBDHOTEL.DANE_PERSONALNE;
+GO

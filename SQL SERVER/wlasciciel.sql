@@ -10,7 +10,7 @@ BEGIN
     DECLARE @sql NVARCHAR(MAX);
 
     -- Przygotowanie zapytania do wykonania na serwerze Oracle
-    SET @sql = N'BEGIN RBDHOTEL.DODAJ_ZNIZKE(' + CAST(@ZNIZKA AS NVARCHAR) + '); END;';
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.DODAJ_ZNIZKE(' + CAST(@ZNIZKA AS NVARCHAR) + '); END;';
 
     -- Wykonanie zapytania na zdalnym serwerze Oracle przez Linked Server
     EXEC (@sql) AT HOTEL;
@@ -30,11 +30,11 @@ CREATE PROCEDURE WLASCICIEL.DODAJ_HOTEL
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.DODAJ_HOTEL(''' 
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.DODAJ_HOTEL(''' 
                + @NAZWA + ''', ''' 
                + @ULICA + ''', ' 
                + CAST(@NR_DOMU AS NVARCHAR) + ', ' 
-               + CAST(@NR_MIESZKANIA AS NVARCHAR) + ', ''' 
+               + ISNULL(CAST(@NR_MIESZKANIA AS NVARCHAR), 'NULL') + ', ''' 
                + @MIEJSCOWOSC + ''', ''' 
                + @KOD_POCZTOWY + ''', ''' 
                + @KRAJ + '''); END;';
@@ -44,7 +44,7 @@ GO
 -------------- ---------------------- -------------- 
 -------------- -- DODAJ PRACOWNIKA -- -------------- 
 -------------- ---------------------- -------------- 
-CREATE PROCEDURE wlasciciel.DODAJ_PRACOWNIKA
+CREATE OR ALTER PROCEDURE wlasciciel.DODAJ_PRACOWNIKA
     @IMIE NVARCHAR(100),
     @NAZWISKO NVARCHAR(100),
     @EMAIL NVARCHAR(100),
@@ -62,7 +62,7 @@ AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
 
-    SET @sql = N'BEGIN RBDHOTEL.DODAJ_PRACOWNIKA(''' 
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.DODAJ_PRACOWNIKA(''' 
                + @IMIE + ''', ''' 
                + @NAZWISKO + ''', ''' 
                + @EMAIL + ''', ''' 
@@ -91,7 +91,7 @@ CREATE PROCEDURE wlasciciel.DODAJ_POKOJ
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.DODAJ_POKOJ('
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.DODAJ_POKOJ('
                + CAST(@ID_HOTELU AS NVARCHAR) + ', ' 
                + CAST(@NR_POKOJU AS NVARCHAR) + ', ' 
                + CAST(@LICZBA_OSOB AS NVARCHAR) + ', ' 
@@ -109,7 +109,7 @@ CREATE PROCEDURE wlasciciel.DODAJ_WYPOSAZENIE
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.DODAJ_WYPOSAZENIE('
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.DODAJ_WYPOSAZENIE('
                + CAST(@ID_POKOJU AS NVARCHAR) + ', ''' 
                + @NAZWA + ''', ' 
                + CAST(@ILOSC AS NVARCHAR) + '); END;';
@@ -126,7 +126,7 @@ CREATE PROCEDURE wlasciciel.DODAJ_USLUGE
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.DODAJ_USLUGE('
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.DODAJ_USLUGE('
                + CAST(@ID_HOTELU AS NVARCHAR) + ', ''' 
                + @NAZWA + ''', ' 
                + CAST(@CENA AS NVARCHAR) + '); END;';
@@ -142,7 +142,7 @@ CREATE PROCEDURE wlasciciel.EDYTUJ_ZNIZKE
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.EDYTUJ_ZNIZKE('
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.EDYTUJ_ZNIZKE('
                + CAST(@ID_ZNIZKI AS NVARCHAR) + ', '
 			   + CAST(@PROCNET AS NVARCHAR) + '); END;';
     EXEC (@sql) AT HOTEL;
@@ -157,7 +157,7 @@ CREATE PROCEDURE wlasciciel.USLUGA_ZMIEN_CENE
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.USLUGA_ZMIEN_CENE('
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.USLUGA_ZMIEN_CENE('
                + CAST(@ID_USLUGI AS NVARCHAR) + ', '
 			   + CAST(@CENA AS NVARCHAR) + '); END;';
     EXEC (@sql) AT HOTEL;
@@ -172,7 +172,7 @@ CREATE PROCEDURE wlasciciel.USLUGA_ZMIEN_NAZWE
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.USLUGA_ZMIEN_CENE('
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.USLUGA_ZMIEN_CENE('
                + CAST(@ID_USLUGI AS NVARCHAR) + ', '''
 			   + @NOWA_NAZWA + '''); END;';
     EXEC (@sql) AT HOTEL;
@@ -186,7 +186,7 @@ CREATE PROCEDURE wlasciciel.USUN_POKOJ
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.USUN_POKOJ('
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.USUN_POKOJ('
                + CAST(@ID_POKOJU AS NVARCHAR) + ') END;';
     EXEC (@sql) AT HOTEL;
 END;
@@ -199,7 +199,7 @@ CREATE PROCEDURE wlasciciel.USUN_USLUGE
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.USUN_USLUGE('
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.USUN_USLUGE('
                + CAST(@ID_USLUGI AS NVARCHAR) + ') END;';
     EXEC (@sql) AT HOTEL;
 END;
@@ -213,7 +213,7 @@ CREATE PROCEDURE wlasciciel.USUN_WYPOSAZENIE
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.USUN_WYPOSAZENIE('
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.USUN_WYPOSAZENIE('
                + CAST(@ID_POKOJU AS NVARCHAR) + ', '''
 			   + @NAZWA + ''') END;';
     EXEC (@sql) AT HOTEL;
@@ -227,7 +227,7 @@ CREATE PROCEDURE wlasciciel.USUN_ZNIZKE
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.USUN_ZNIZKE('
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.USUN_ZNIZKE('
                + CAST(@ID_ZNIZKI AS NVARCHAR) + ') END;';
     EXEC (@sql) AT HOTEL;
 END;
@@ -241,7 +241,7 @@ CREATE PROCEDURE wlasciciel.ZMIEN_CENE_POKOJU
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.ZMIEN_CENE_POKOJU('
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.ZMIEN_CENE_POKOJU('
 				+ CAST(@ID_POKOJU AS NVARCHAR) + ', '
                + CAST(@CENA AS NVARCHAR) + ') END;';
     EXEC (@sql) AT HOTEL;
@@ -257,115 +257,116 @@ CREATE PROCEDURE wlasciciel.ZMIEN_ILOSC_WYPOSAZENIA
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.ZMIEN_ILOSC_WYPOSAZENIA('
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.ZMIEN_ILOSC_WYPOSAZENIA('
 				+ CAST(@ID_POKOJU AS NVARCHAR) + ', '''
 				+ @NAZWA + ''', '
-               + CAST(@ILOSC AS NVARCHAR) + ') END;';
+               + CAST(@ILOSC AS NVARCHAR) + '); END;';
     EXEC (@sql) AT HOTEL;
 END;
 GO
 -------------- ------------------------------ -------------- 
 -------------- -- ZMIEN LICZBE OSOB POKOJU -- -------------- 
 -------------- ------------------------------ -------------- 
-CREATE PROCEDURE wlasciciel.ZMIEN_LICZBE_OSOB_POKOJU
+CREATE OR ALTER PROCEDURE wlasciciel.ZMIEN_LICZBE_OSOB_POKOJU
     @ID_POKOJU INT,
 	@LICZBA_OSOB INT
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.ZMIEN_LICZBE_OSOB_POKOJU('
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.ZMIEN_LICZBE_OSOB_POKOJU('
 				+ CAST(@ID_POKOJU AS NVARCHAR) + ', '
-                + CAST(@LICZBA_OSOB AS NVARCHAR) + ') END;';
+                + CAST(@LICZBA_OSOB AS NVARCHAR) + '); END;';
     EXEC (@sql) AT HOTEL;
 END;
 GO
 -------------- ------------------------ -------------- 
 -------------- -- ZMIEN NAZWE HOTELU -- -------------- 
 -------------- ------------------------ -------------- 
-CREATE PROCEDURE wlasciciel.ZMIEN_NAZWE_HOTELU
+CREATE OR ALTER PROCEDURE wlasciciel.ZMIEN_NAZWE_HOTELU
     @ID_HOTELU INT,
 	@NAZWA NVARCHAR
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.ZMIEN_NAZWE_HOTELU('
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.ZMIEN_NAZWE_HOTELU('
 				+ CAST(@ID_HOTELU AS NVARCHAR) + ', '''
-                + @NAZWA + ''') END;';
+                + @NAZWA + '''); END;';
     EXEC (@sql) AT HOTEL;
 END;
 GO
 -------------- ----------------------------- -------------- 
 -------------- -- ZMIEN NAZWE WYPOSAZENIA -- -------------- 
 -------------- ----------------------------- -------------- 
-CREATE PROCEDURE wlasciciel.ZMIEN_NAZWE_WYPOSAZENIA
+CREATE OR ALTER PROCEDURE wlasciciel.ZMIEN_NAZWE_WYPOSAZENIA
     @ID_HOTELU INT,
-	@NAZWA NVARCHAR,
-	@NOWA_NAZWA NVARCHAR
+	@NAZWA NVARCHAR(50),
+	@NOWA_NAZWA NVARCHAR(50)
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.ZMIEN_NAZWE_WYPOSAZENIA('
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.ZMIEN_NAZWE_WYPOSAZENIA('
 				+ CAST(@ID_HOTELU AS NVARCHAR) + ', '''
                 + @NAZWA + ''', '''
-				+ @NOWA_NAZWA + ''') END;';
+				+ @NOWA_NAZWA + '''); END;';
     EXEC (@sql) AT HOTEL;
 END;
 GO
 -------------- ------------------------ -------------- 
 -------------- -- ZMIEN NUMER POKOJU -- -------------- 
 -------------- ------------------------ -------------- 
-CREATE PROCEDURE wlasciciel.ZMIEN_NUMER_POKOJU
+CREATE OR ALTER PROCEDURE wlasciciel.ZMIEN_NUMER_POKOJU
     @ID_POKOJU INT,
 	@NR_POKOJU INT
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.ZMIEN_NUMER_POKOJU('
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.ZMIEN_NUMER_POKOJU('
 				+ CAST(@ID_POKOJU AS NVARCHAR) + ', '
-                + CAST(@NR_POKOJU AS NVARCHAR) + ', END;';
+                + CAST(@NR_POKOJU AS NVARCHAR) + '); END;';
+				PRINT(@sql);
     EXEC (@sql) AT HOTEL;
 END;
 GO
 -------------- ------------------ -------------- 
 -------------- -- ZMIEN PENSJE -- -------------- 
 -------------- ------------------ -------------- 
-CREATE PROCEDURE wlasciciel.ZMIEN_PENSJE
+CREATE OR ALTER PROCEDURE wlasciciel.ZMIEN_PENSJE
     @ID_PRACOWNIKA INT,
 	@PENSJA INT
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.ZMIEN_PENSJE('
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.ZMIEN_PENSJE('
 				+ CAST(@ID_PRACOWNIKA AS NVARCHAR) + ', '
-                + CAST(@PENSJA AS NVARCHAR) + ', END;';
+                + CAST(@PENSJA AS NVARCHAR) + '); END;';
     EXEC (@sql) AT HOTEL;
 END;
 GO
 -------------- ---------------------- -------------- 
 -------------- -- ZMIEN STANOWISKO -- -------------- 
 -------------- ---------------------- -------------- 
-CREATE PROCEDURE wlasciciel.ZMIEN_STANOWISKO
+CREATE OR ALTER PROCEDURE wlasciciel.ZMIEN_STANOWISKO
     @ID_PRACOWNIKA INT,
-	@STANOWIKSO NVARCHAR
+	@STANOWIKSO NVARCHAR(20)
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.ZMIEN_STANOWISKO('
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.ZMIEN_STANOWISKO('
 				+ CAST(@ID_PRACOWNIKA AS NVARCHAR) + ', '''
-                + @STANOWIKSO + ''', END;';
+                + @STANOWIKSO + '''); END;';
     EXEC (@sql) AT HOTEL;
 END;
 GO
 -------------- ------------------------ -------------- 
 -------------- -- ZWOLNIJ PRACOWNIKA -- -------------- 
 -------------- ------------------------ -------------- 
-CREATE PROCEDURE wlasciciel.ZWOLNIJ_PRACOWNIKA
+CREATE OR ALTER PROCEDURE wlasciciel.ZWOLNIJ_PRACOWNIKA
     @ID_PRACOWNIKA INT
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.ZWOLNIJ_PRACOWNIKA('
-				+ CAST(@ID_PRACOWNIKA AS NVARCHAR) + 'END;';
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.ZWOLNIJ_PRACOWNIKA('
+				+ CAST(@ID_PRACOWNIKA AS NVARCHAR) + '); END;';
     EXEC (@sql) AT HOTEL;
 END;
 GO
