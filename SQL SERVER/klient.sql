@@ -55,18 +55,19 @@ GO
 CREATE OR ALTER PROCEDURE KLIENT.DODAJ_REZERWACJE
     @ID_HOTELU INT,
     @ID_KLIENTA INT,
-    @ID_POKOJU INT,
-    @PRZYJAZD DATETIME,
-    @ODJAZD DATETIME
+    @LICZBA_OSOB INT,
+    @PRZYJAZD DATE,
+    @ODJAZD DATE
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
     SET @sql = N'BEGIN RBDHOTEL.KLIENT.DODAJ_REZERWACJE('
                + CAST(@ID_HOTELU AS NVARCHAR) + ', '
                + CAST(@ID_KLIENTA AS NVARCHAR) + ', '
-               + CAST(@ID_POKOJU AS NVARCHAR) + ', '
-               + '''' + CONVERT(NVARCHAR, @PRZYJAZD, 120) + ''', '
-               + '''' + CONVERT(NVARCHAR, @ODJAZD, 120) + '''); END;';
+               + CAST(@LICZBA_OSOB AS NVARCHAR) + ', '
+               + 'TO_DATE(''' + CONVERT(NVARCHAR, @PRZYJAZD, 23) + ''', ''YYYY-MM-DD''), '
+               + 'TO_DATE(''' + CONVERT(NVARCHAR, @ODJAZD, 23) + ''', ''YYYY-MM-DD'')); END;';
+	print @sql;
     EXEC (@sql) AT HOTEL;
 END;
 GO

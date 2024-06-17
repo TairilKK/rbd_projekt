@@ -712,3 +712,13 @@ EXEC wlasciciel.DODAJ_USLUGE
     @ID_HOTELU = 3,
     @NAZWA = 'Basen kryty',
     @CENA = 200.00;
+
+EXEC wlasciciel.DODAJ_WYPOSAZENIE 1, 'KRZES£O', 4;
+EXEC wlasciciel.DODAJ_WYPOSAZENIE 1, 'STÓ£', 1;
+EXEC wlasciciel.DODAJ_WYPOSAZENIE 1, '£Ó¯KO', 2;
+
+EXEC wlasciciel.DODAJ_WYPOSAZENIE 2, 'KRZES£O', 3;
+EXEC wlasciciel.DODAJ_WYPOSAZENIE 2, 'STÓ£', 1;
+EXEC wlasciciel.DODAJ_WYPOSAZENIE 2, '£Ó¯KO', 2;
+
+SELECT * FROM wlasciciel.WYPOSAZENIE_POKOJOW_HOTELU;

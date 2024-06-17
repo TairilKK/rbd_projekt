@@ -16,11 +16,17 @@ GO
 -------------- -- POKOJ_POSPRZATANY -- --------------
 -------------- ----------------------- -------------- 
 CREATE OR ALTER PROCEDURE pokojowka.POKOJ_POSPRZATANY
-    @ID_POKOJU INT
+    @ID_HOTELU INT
+	@ID_REZERWACJI INT,
+    @NR_POKOJU INT,
+	@ID_PRACOWNIKA INT
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.POKOJ_POSPRZATANY('
-			   + CAST(@ID_POKOJU AS NVARCHAR) + '); END;';
+    SET @sql = N'BEGIN RBDHOTEL.POKOJOWKA.POKOJ_POSPRZATANY('
+			   + CAST(@ID_HOTELU AS NVARCHAR) + ', '
+			   + CAST(@ID_REZERWACJI AS NVARCHAR) + ', '
+			   + CAST(@NR_POKOJU AS NVARCHAR) + ', '
+			   + CAST(@ID_PRACOWNIKA AS NVARCHAR) + ', sysdate); END;';
     EXEC (@sql) AT HOTEL;
 END;
