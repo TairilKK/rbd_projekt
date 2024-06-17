@@ -114,11 +114,38 @@ SELECT * FROM REZERWACJE;
 SELECT * FROM GOSCIE;
 SELECT * FROM REZERWACJE_USLUGI;
 
-/*EXEC POKOJ_DO_NAPRAWYPOKOJ_DO_NAPRAWY(1, 123, 101, 'Uszkodzona klimatyzacja',
-    TO_TIMESTAMP('2024-07-01 09:00:00', 'YYYY-MM-DD HH24:MI:SS'), 
-    TO_TIMESTAMP('2024-07-01 17:00:00', 'YYYY-MM-DD HH24:MI:SS') 
-);*/
+-------------- -------------------------------------------------- -------------- 
+-------------- -- SPRAWDZENIE PROCEDUR POKOJOWKA I KONSERWATOR -- -------------- 
+-------------- -------------------------------------------------- --------------
 
+BEGIN
+  POKOJ_DO_SPRZATANIA(
+    1, 
+    1,
+    101,  
+    'Generalne sprz¹tanie po d³ugim pobycie goœcia', 
+    TIMESTAMP '2024-06-20 09:00:00', 
+    TIMESTAMP '2024-06-20 12:00:00'
+  );
+END;
+
+SELECT * FROM SPRZATANIE;
+
+BEGIN
+  POKOJ_DO_NAPRAWY(
+    1, 
+    1,
+    101,  
+    'USZKODZONY KARNISZ', 
+    TIMESTAMP '2024-06-20 09:00:00', 
+    TIMESTAMP '2024-06-20 12:00:00'
+  );
+END;
+
+SELECT * FROM NAPRAWY;
+
+EXEC KONSERWATOR.POKOJ_NAPRAWIONY(1, 1, 101, 1, TIMESTAMP '2024-06-20 10:00:00');
+EXEC POKOJOWKA.POKOJ_POSPRZATANY(1, 1, 101, 1, TIMESTAMP '2024-06-20 10:00:00');
 
 ----STARE-----
 
