@@ -20,7 +20,7 @@ BEGIN
     'Polska', 
     1, 
     3000, 
-    'RECEPCJA'
+    'SZEF'
   );
 END;
 
@@ -74,7 +74,10 @@ BEGIN
 END;
 
 EXEC KLIENT.DODAJ_REZERWACJE(1, 1, 2, TO_DATE('2024-07-01', 'YYYY-MM-DD'), TO_DATE('2024-07-10', 'YYYY-MM-DD'));
-
+EXEC KLIENT.DODAJ_GOSCIA(1, 'MARIA', 'POLAK');
+EXEC KLIENT.USUN_GOSCIA(1, 'MARIA', 'POLAK');
+EXEC KLIENT.OPLAC_ZALICZKE(1);
+EXEC KLIENT.USUN_REZERWACJE(1);
 
 select * from hotele;
 select * from adresy;
@@ -85,7 +88,31 @@ select * from uslugi;
 select * from znizki;
 SELECT * FROM DANE_PERSONALNE;
 SELECT * FROM KLIENCI;
+SELECT * FROM REZERWACJE;
+SELECT * FROM GOSCIE;
 
+-------------- ---------------------------------- -------------- 
+-------------- -- SPRAWDZENIE PROCEDUR KLIENTA -- -------------- 
+-------------- ---------------------------------- --------------
+
+--EXEC RECEPCJA.AKTUALIZUJ_CENE_POBYTU(1);
+EXEC RECEPCJA.DODAJ_REZERWACJA_USLUGA(1, 1, 1, 2);
+EXEC RECEPCJA.OPLATA_ZNISZCZENIE(1, 200);
+EXEC RECEPCJA.POTWIERDZ_REZERWACJE(1, 1);
+EXEC RECEPCJA.ZAKONCZ_REZERWACJE(1);
+
+select * from hotele;
+select * from adresy;
+select * from personel;
+select * from pokoje;
+select * from wyposazenie;
+select * from uslugi;
+select * from znizki;
+SELECT * FROM DANE_PERSONALNE;
+SELECT * FROM KLIENCI;
+SELECT * FROM REZERWACJE;
+SELECT * FROM GOSCIE;
+SELECT * FROM REZERWACJE_USLUGI;
 
 /*EXEC POKOJ_DO_NAPRAWYPOKOJ_DO_NAPRAWY(1, 123, 101, 'Uszkodzona klimatyzacja',
     TO_TIMESTAMP('2024-07-01 09:00:00', 'YYYY-MM-DD HH24:MI:SS'), 
