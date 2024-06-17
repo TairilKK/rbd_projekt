@@ -1,23 +1,99 @@
--------------- ------------ -------------- 
--------------- -- HOTELE -- -------------- 
--------------- ------------ -------------- 
-INSERT INTO ADRESY (ULICA, NR_DOMU, NR_MIESZKANIA, MIEJSCOWOSC, KOD_POCZTOWY, KRAJ)
-VALUES ('Gdañska', 10, NULL, 'Warszawa', '00-001', 'Polska');
-INSERT INTO HOTELE (ID_ADRESU, NAZWA)
-VALUES (ADRES_SEQ.CURRVAL, 'Hotel Warszawa');
+-------------- -------------------------------- -------------- 
+-------------- -- SPRAWDZENIE PROCEDUR SZEFA -- -------------- 
+-------------- -------------------------------- -------------- 
 
-INSERT INTO ADRESY (ULICA, NR_DOMU, NR_MIESZKANIA, MIEJSCOWOSC, KOD_POCZTOWY, KRAJ)
-VALUES ('Gdañska', 15, 3, 'Kraków', '30-001', 'Polska');
-INSERT INTO HOTELE (ID_ADRESU, NAZWA)
-VALUES (ADRES_SEQ.CURRVAL, 'Hotel Kraków');
+EXEC SZEF.DODAJ_HOTEL('HOTEL_WARSZAWA', 'Gdañska', 10, NULL, 'Warszawa', '00-001', 'Polska');
 
-INSERT INTO ADRESY (ULICA, NR_DOMU, NR_MIESZKANIA, MIEJSCOWOSC, KOD_POCZTOWY, KRAJ)
-VALUES ('Gdañska', 20, 5, '£ódŸ', '80-001', 'Polska');
-INSERT INTO HOTELE (ID_ADRESU, NAZWA)
-VALUES (ADRES_SEQ.CURRVAL, 'Hotel £ódŸ');
+EXEC SZEF.ZMIEN_NAZWE_HOTELU(1, 'HOTEL_WAWA');
+    
+BEGIN
+  SZEF.DODAJ_PRACOWNIKA(
+    'Jan', 
+    'Kowalski', 
+    'jan.kowalski@example.com', 
+    '123456789', 
+    'Mickiewicza', 
+    15, 
+    3, 
+    'Warszawa', 
+    '00-001', 
+    'Polska', 
+    1, 
+    3000, 
+    'RECEPCJA'
+  );
+END;
 
---select * from hotele;
---select * from adresy;
+EXEC SZEF.ZMIEN_PENSJE(1, 3500);
+EXEC SZEF.ZMIEN_STANOWISKO(1, 'KONSERWATOR');
+EXEC SZEF.ZWOLNIJ_PRACOWNIKA(1);
+
+EXEC SZEF.DODAJ_POKOJ(1, 101, 2, 150);
+EXEC SZEF.ZMIEN_LICZBE_OSOB_POKOJU(1, 4);
+EXEC SZEF.ZMIEN_NUMER_POKOJU(1, 102);
+EXEC SZEF.ZMIEN_CENE_POKOJU(1, 200);
+
+EXEC SZEF.DODAJ_WYPOSAZENIE(1, '£ó¿ko', 2);
+EXEC SZEF.ZMIEN_ILOSC_WYPOSAZENIA(1, '£ó¿ko', 4);
+EXEC SZEF.ZMIEN_NAZWE_WYPOSAZENIA(1, '£ó¿ko', 'Krzes³o');
+
+EXEC SZEF.DODAJ_USLUGE(1, 'SPA', 100);
+EXEC SZEF.USLUGA_ZMIEN_CENE(1, 150);
+EXEC SZEF.USLUGA_ZMIEN_NAZWE(1, 'MASAZ');
+
+EXEC SZEF.DODAJ_ZNIZKE(0);
+EXEC SZEF.EDYTUJ_ZNIZKE(1, 5);
+EXEC SZEF.OBNIZ_ZNIZKI();
+
+select * from hotele;
+select * from adresy;
+select * from personel;
+select * from pokoje;
+select * from wyposazenie;
+select * from uslugi;
+select * from znizki;
+SELECT * FROM DANE_PERSONALNE;
+
+-------------- ---------------------------------- -------------- 
+-------------- -- SPRAWDZENIE PROCEDUR KLIENTA -- -------------- 
+-------------- ---------------------------------- -------------- 
+
+BEGIN
+  KLIENT.DODAJ_KLIENTA(
+    'Anna', 
+    'Nowak', 
+    'anna.nowak@example.com', 
+    '987654321', 
+    'Kwiatowa', 
+    20, 
+    1, 
+    'Kraków', 
+    '30-001', 
+    'Polska'
+  );
+END;
+
+EXEC KLIENT.DODAJ_REZERWACJE(1, 1, 2, TO_DATE('2024-07-01', 'YYYY-MM-DD'), TO_DATE('2024-07-10', 'YYYY-MM-DD'));
+
+
+select * from hotele;
+select * from adresy;
+select * from personel;
+select * from pokoje;
+select * from wyposazenie;
+select * from uslugi;
+select * from znizki;
+SELECT * FROM DANE_PERSONALNE;
+SELECT * FROM KLIENCI;
+
+
+/*EXEC POKOJ_DO_NAPRAWYPOKOJ_DO_NAPRAWY(1, 123, 101, 'Uszkodzona klimatyzacja',
+    TO_TIMESTAMP('2024-07-01 09:00:00', 'YYYY-MM-DD HH24:MI:SS'), 
+    TO_TIMESTAMP('2024-07-01 17:00:00', 'YYYY-MM-DD HH24:MI:SS') 
+);*/
+
+
+----STARE-----
 
 -------------- ------------ -------------- 
 -------------- -- POKOJE -- -------------- 
@@ -267,17 +343,4 @@ VALUES ((SELECT ID_OSOBY FROM DANE_PERSONALNE WHERE EMAIL = 'grzegorz.witkowski@
 
 ----------------------------------------------------------------------------------------------
 
-EXEC DODAJ_ZNIZKE(0);
-EXEC DODAJ_ZNIZKE(5);
-EXEC DODAJ_ZNIZKE(10);
-EXEC DODAJ_ZNIZKE(20);
 
-SELECT * FROM ZNIZKI;
-
-EXEC RBDHOTEL.DODAJ_KLIENTA( 'TEST', 'TEST_N', 'TEST@TEST.COM', '123456789', 'ULICA', 1, 1, 'MIEJSCOWOSC', '00-000', 'KRAJ')
-
-SELECT * FROM HOTELE;
-
-SELECT * FROM KLIENCI;
-
-SELECT * FROM zNIZKI;
