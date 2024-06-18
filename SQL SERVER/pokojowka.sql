@@ -1,22 +1,33 @@
 USE [RBDHOTEL]
 GO
--------------- ---------------------------- -------------- 
--------------- -- DO POSPRZATANIA POKOJU -- -------------- 
--------------- ---------------------------- -------------- 
-CREATE OR ALTER FUNCTION pokojowka.DO_POSPRZATANIA()
-RETURNS TABLE
+-------------- ---------------------- -------------- 
+-------------- -- DO POSPRZATANIA  -- -------------- 
+-------------- ---------------------- -------------- 
+CREATE OR ALTER PROCEDURE klient.DO_POSPRZATANIA
+    @ID_HOTELU INT,
+	@ID_REZERWACJI INT,
+    @NR_POKOJU INT,
+	@OPIS NVARCHAR(255),
+	@GODZINA_POCZATEK TIME,
+	@GODZINA_KONIEC TIME
 AS
-RETURN
-(
-    SELECT * FROM POKOJE_HOTELU
-    WHERE POSPRZATANY <> 'TAK'
-);
+BEGIN
+    DECLARE @sql NVARCHAR(MAX);
+    SET @sql = N'BEGIN RBDHOTEL.POKOJ_DO_SPRZATANIA('
+			   + CAST(@ID_HOTELU AS NVARCHAR) + ', '
+			   + CAST(@ID_REZERWACJI AS NVARCHAR) + ', '
+			   + CAST(@NR_POKOJU AS NVARCHAR) + ', '''
+			   + @OPIS + ''', TO_TIMESTAMP('''
+			   + CAST(@GODZINA_POCZATEK AS NVARCHAR) + ''',''HH24:Mi:SS.FF7''), TO_TIMESTAMP('''
+			   + CAST(@GODZINA_KONIEC AS NVARCHAR) + ''',''HH24:Mi:SS.FF7'')); END;';
+    EXEC (@sql) AT HOTEL;
+END;
 GO
 -------------- ----------------------- -------------- 
 -------------- -- POKOJ_POSPRZATANY -- --------------
 -------------- ----------------------- -------------- 
 CREATE OR ALTER PROCEDURE pokojowka.POKOJ_POSPRZATANY
-    @ID_HOTELU INT
+    @ID_HOTELU INT,
 	@ID_REZERWACJI INT,
     @NR_POKOJU INT,
 	@ID_PRACOWNIKA INT

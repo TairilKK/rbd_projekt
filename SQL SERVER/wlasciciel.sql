@@ -165,77 +165,23 @@ END;
 GO
 -------------- ------------------------ -------------- 
 -------------- -- USLUGA ZMIEN NAZWE -- -------------- 
--------------- ------------------------ -------------- 
-CREATE PROCEDURE wlasciciel.USLUGA_ZMIEN_NAZWE
+-------------- ------------------------ --------------
+CREATE OR ALTER PROCEDURE wlasciciel.USLUGA_ZMIEN_NAZWE
     @ID_USLUGI INT,
-    @NOWA_NAZWA NVARCHAR
+    @NOWA_NAZWA NVARCHAR(50)
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.SZEF.USLUGA_ZMIEN_CENE('
+    SET @sql = N'BEGIN RBDHOTEL.SZEF.USLUGA_ZMIEN_NAZWE('
                + CAST(@ID_USLUGI AS NVARCHAR) + ', '''
 			   + @NOWA_NAZWA + '''); END;';
-    EXEC (@sql) AT HOTEL;
-END;
-GO
--------------- ---------------- -------------- 
--------------- -- USUN POKOJ -- -------------- 
--------------- ---------------- -------------- 
-CREATE PROCEDURE wlasciciel.USUN_POKOJ
-    @ID_POKOJU INT
-AS
-BEGIN
-    DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.SZEF.USUN_POKOJ('
-               + CAST(@ID_POKOJU AS NVARCHAR) + ') END;';
-    EXEC (@sql) AT HOTEL;
-END;
-GO
--------------- ----------------- -------------- 
--------------- -- USUN USLUGE -- -------------- 
--------------- ----------------- -------------- 
-CREATE PROCEDURE wlasciciel.USUN_USLUGE
-    @ID_USLUGI INT
-AS
-BEGIN
-    DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.SZEF.USUN_USLUGE('
-               + CAST(@ID_USLUGI AS NVARCHAR) + ') END;';
-    EXEC (@sql) AT HOTEL;
-END;
-GO
--------------- ---------------------- -------------- 
--------------- -- USUN WYPOSAZENIE -- -------------- 
--------------- ---------------------- -------------- 
-CREATE PROCEDURE wlasciciel.USUN_WYPOSAZENIE
-    @ID_POKOJU INT,
-	@NAZWA NVARCHAR
-AS
-BEGIN
-    DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.SZEF.USUN_WYPOSAZENIE('
-               + CAST(@ID_POKOJU AS NVARCHAR) + ', '''
-			   + @NAZWA + ''') END;';
-    EXEC (@sql) AT HOTEL;
-END;
-GO
--------------- ----------------- -------------- 
--------------- -- USUN ZNIZKE -- -------------- 
--------------- ----------------- -------------- 
-CREATE PROCEDURE wlasciciel.USUN_ZNIZKE
-    @ID_ZNIZKI INT
-AS
-BEGIN
-    DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.SZEF.USUN_ZNIZKE('
-               + CAST(@ID_ZNIZKI AS NVARCHAR) + ') END;';
     EXEC (@sql) AT HOTEL;
 END;
 GO
 -------------- ----------------------- -------------- 
 -------------- -- ZMIEN CENE POKOJU -- -------------- 
 -------------- ----------------------- -------------- 
-CREATE PROCEDURE wlasciciel.ZMIEN_CENE_POKOJU
+CREATE or alter PROCEDURE wlasciciel.ZMIEN_CENE_POKOJU
     @ID_POKOJU INT,
 	@CENA INT
 AS
@@ -243,16 +189,16 @@ BEGIN
     DECLARE @sql NVARCHAR(MAX);
     SET @sql = N'BEGIN RBDHOTEL.SZEF.ZMIEN_CENE_POKOJU('
 				+ CAST(@ID_POKOJU AS NVARCHAR) + ', '
-               + CAST(@CENA AS NVARCHAR) + ') END;';
+               + CAST(@CENA AS NVARCHAR) + '); END;';
     EXEC (@sql) AT HOTEL;
 END;
 GO
 -------------- ----------------------------- -------------- 
 -------------- -- ZMIEN ILOSC WYPOSAZENIA -- -------------- 
 -------------- ----------------------------- -------------- 
-CREATE PROCEDURE wlasciciel.ZMIEN_ILOSC_WYPOSAZENIA
+CREATE OR ALTER PROCEDURE wlasciciel.ZMIEN_ILOSC_WYPOSAZENIA
     @ID_POKOJU INT,
-	@NAZWA NVARCHAR,
+	@NAZWA NVARCHAR(50),
 	@ILOSC INT
 AS
 BEGIN
@@ -284,7 +230,7 @@ GO
 -------------- ------------------------ -------------- 
 CREATE OR ALTER PROCEDURE wlasciciel.ZMIEN_NAZWE_HOTELU
     @ID_HOTELU INT,
-	@NAZWA NVARCHAR
+	@NAZWA NVARCHAR(50)
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);

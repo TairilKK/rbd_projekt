@@ -25,11 +25,12 @@ CREATE OR ALTER PROCEDURE recepcja.DODAJ_REZERWACJA_USULGA
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.DODAJ_REZERWACJA_USULGA('
+    SET @sql = N'BEGIN RBDHOTEL.RECEPCJA.DODAJ_REZERWACJA_USLUGA('
                + CAST(@ID_HOTELU AS NVARCHAR) + ', '
                + CAST(@ID_USLUGI AS NVARCHAR) + ', '
                + CAST(@ID_REZERWACJI AS NVARCHAR) + ', '
 			   + CAST(@ID_REZERWACJI AS NVARCHAR) + '); END;';
+	PRINT @sql;
     EXEC (@sql) AT HOTEL;
 END;
 GO
@@ -42,7 +43,7 @@ CREATE OR ALTER PROCEDURE recepcja.OPLATA_ZNISZCZENIE
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.OPLATA_ZNISZCZENIE('
+    SET @sql = N'BEGIN RBDHOTEL.RECEPCJA.OPLATA_ZNISZCZENIE('
                + CAST(@ID_REZERWACJI AS NVARCHAR) + ', '
 			   + CAST(@OPLATA_ZNISCZENIE AS NVARCHAR) + '); END;';
     EXEC (@sql) AT HOTEL;
@@ -51,13 +52,13 @@ GO
 -------------- -------------------------- -------------- 
 -------------- -- POTWIERDZ REZERWACJE -- -------------- 
 -------------- -------------------------- --------------
-CREATE PROCEDURE recepcja.POTWIERDZ_REZERWACJE
+CREATE or alter PROCEDURE recepcja.POTWIERDZ_REZERWACJE
     @ID_REZERWACJI INT,
     @ID_PRACOWNIKA INT
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.POTWIERDZ_REZERWACJE('
+    SET @sql = N'BEGIN RBDHOTEL.RECEPCJA.POTWIERDZ_REZERWACJE('
                + CAST(@ID_REZERWACJI AS NVARCHAR) + ', '
 			   + CAST(@ID_REZERWACJI AS NVARCHAR) + '); END;';
     EXEC (@sql) AT HOTEL;
@@ -66,12 +67,12 @@ GO
 -------------- ------------------------ -------------- 
 -------------- -- ZAKONCZ REZERWACJE -- -------------- 
 -------------- ------------------------ -------------- 
-CREATE PROCEDURE recepcja.ZAKONCZ_REZERWACJE
+CREATE OR ALTER PROCEDURE recepcja.ZAKONCZ_REZERWACJE
     @ID_REZERWACJI INT
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.ZAKONCZ_REZERWACJE('
+    SET @sql = N'BEGIN RBDHOTEL.RECEPCJA.ZAKONCZ_REZERWACJE('
                + CAST(@ID_REZERWACJI AS NVARCHAR) + '); END;';
     EXEC (@sql) AT HOTEL;
 END;

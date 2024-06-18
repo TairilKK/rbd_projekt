@@ -52,6 +52,13 @@ GO
 -------------- ---------------------- -------------- 
 -------------- -- DODAJ REZERWACJE -- -------------- 
 -------------- ---------------------- -------------- 
+-- PROCEDURE DODAJ_REZERWACJE(
+--  P_ID_HOTELU IN NUMBER,
+--  P_ID_KLIENTA IN NUMBER,
+--  P_LICZBA_OSOB IN NUMBER,
+--  P_PRZYJAZD IN DATE,
+--  P_ODJAZD IN DATE
+--);
 CREATE OR ALTER PROCEDURE KLIENT.DODAJ_REZERWACJE
     @ID_HOTELU INT,
     @ID_KLIENTA INT,
@@ -67,7 +74,6 @@ BEGIN
                + CAST(@LICZBA_OSOB AS NVARCHAR) + ', '
                + 'TO_DATE(''' + CONVERT(NVARCHAR, @PRZYJAZD, 23) + ''', ''YYYY-MM-DD''), '
                + 'TO_DATE(''' + CONVERT(NVARCHAR, @ODJAZD, 23) + ''', ''YYYY-MM-DD'')); END;';
-	print @sql;
     EXEC (@sql) AT HOTEL;
 END;
 GO
@@ -87,16 +93,16 @@ GO
 -------------- ----------------- -------------- 
 -------------- -- USUN GOSCIA -- -------------- 
 -------------- ----------------- -------------- 
-CREATE PROCEDURE klient.USUN_GOSCIA
+CREATE OR ALTER PROCEDURE klient.USUN_GOSCIA
     @ID_REZERWACJI INT,
-    @IMIE NVARCHAR,
-	@NAZWISKO NVARCHAR
+    @IMIE NVARCHAR(50),
+	@NAZWISKO NVARCHAR(50)
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.USUN_GOSCIA('
+    SET @sql = N'BEGIN RBDHOTEL.KLIENT.USUN_GOSCIA('
                + CAST(@ID_REZERWACJI AS NVARCHAR) + ', '''
-			   + @IMIE + ', '''
+			   + @IMIE + ''', '''
 			   + @NAZWISKO + '''); END;';
     EXEC (@sql) AT HOTEL;
 END;
@@ -109,7 +115,7 @@ CREATE or alter PROCEDURE klient.USUN_REZERWACJE
 AS
 BEGIN
     DECLARE @sql NVARCHAR(MAX);
-    SET @sql = N'BEGIN RBDHOTEL.USUN_REZERWACJE('
+    SET @sql = N'BEGIN RBDHOTEL.KLIENT.USUN_REZERWACJE('
                + CAST(@ID_REZERWACJI AS NVARCHAR) + '); END;';
     EXEC (@sql) AT HOTEL;
 END;
